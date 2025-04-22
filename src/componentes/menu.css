@@ -1,0 +1,196 @@
+/* menu.css - Versión Unificada */
+.neon-menu, .neon-auth-menu { /* Aplicar estilos a ambos menús */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    margin: 50px auto; /* Centrar el menú */
+    padding: 20px;
+    background: rgba(5, 5, 30, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 195, 255, 0.2);
+    animation: menuAppear 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes menuAppear {
+    from { 
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.neon-menu-tabs, .neon-auth-tabs { /* Aplicar estilos a ambas secciones de pestañas */
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(0, 195, 255, 0.3);
+    position: relative;
+}
+
+.neon-menu-item, .auth-tab { /* Aplicar estilos a todos los botones */
+    flex: 1;
+    padding: 18px;
+    background: transparent;
+    border: none;
+    color: rgba(0, 195, 255, 0.7);
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.4s;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px rgba(0, 195, 255, 0.3);
+}
+
+.neon-menu-item.active, .auth-tab.active { /* Aplicar estilos a los botones activos */
+    color: #00f2ff;
+    text-shadow: 
+        0 0 10px #00c3ff,
+        0 0 20px rgba(0, 195, 255, 0.5);
+}
+
+.neon-menu-item.active::after, .auth-tab.active::after { /* Aplicar estilos a la línea debajo de los botones activos */
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #00f2ff, #0084ff);
+    animation: tabUnderline 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) both;
+    border-radius: 2px 2px 0 0;
+}
+
+@keyframes tabUnderline {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+}
+
+.neon-auth-content, .auth-menu-content { /* Aplicar estilos a ambas secciones de contenido */
+    width: 100%;
+    animation: contentFade 0.6s both;
+}
+
+@keyframes contentFade {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efecto de hover para las pestañas */
+.neon-menu-item:hover, .auth-tab:hover { /* Aplicar estilos a todos los botones al pasar el mouse */
+    color: #00c3ff;
+    text-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+}
+
+/* Efecto de reflejo */
+.neon-menu, .neon-auth-menu::before { /* Aplicar estilos a ambos menús */
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    background: 
+        radial-gradient(circle at 70% 30%, rgba(0, 200, 255, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 30% 70%, rgba(0, 150, 255, 0.05) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: -1;
+    animation: bgMove 15s infinite linear;
+}
+
+@keyframes bgMove {
+    100% {
+        transform: rotate(1deg);
+    }
+}
+/* Estilos para el menú principal */
+.neon-menu-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  
+  .neon-menu-tabs {
+    display: flex;
+    gap: 15px;
+    background: rgba(5, 5, 30, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 
+      0 0 15px rgba(0, 150, 255, 0.5),
+      inset 0 0 10px rgba(0, 200, 255, 0.2);
+    border: 1px solid rgba(0, 200, 255, 0.3);
+  }
+  
+  .neon-menu-item {
+    padding: 12px 20px;
+    background: rgba(0, 150, 255, 0.1);
+    border: none;
+    color: #00f2ff;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.4s;
+    border-radius: 6px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .neon-menu-item:hover {
+    background: rgba(0, 195, 255, 0.2);
+    box-shadow: 
+      0 0 15px rgba(0, 195, 255, 0.5),
+      inset 0 0 10px rgba(0, 195, 255, 0.3);
+  }
+  
+  .neon-menu-item.active {
+    background: rgba(0, 195, 255, 0.3);
+    color: #00ffcc;
+    box-shadow: 
+      0 0 20px rgba(0, 195, 255, 0.7),
+      inset 0 0 15px rgba(0, 195, 255, 0.4);
+  }
+  
+  .neon-menu-item.logout {
+    background: rgba(255, 45, 117, 0.1);
+  }
+  
+  .neon-menu-item.logout:hover {
+    background: rgba(255, 45, 117, 0.2);
+    box-shadow: 
+      0 0 15px rgba(255, 45, 117, 0.5),
+      inset 0 0 10px rgba(255, 45, 117, 0.3);
+  }
+  
+  /* Estilos para el menú de autenticación (conserva los anteriores) */
+  .neon-auth-menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background: rgba(10, 10, 30, 0.7);
+    border-radius: 20px;
+    box-shadow: 
+        0 0 30px rgba(0, 150, 255, 0.4),
+        inset 0 0 20px rgba(0, 200, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 200, 255, 0.3);
+    animation: menuAppear 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+  
+  /* ... (conserva el resto de estilos del menú de autenticación) ... */

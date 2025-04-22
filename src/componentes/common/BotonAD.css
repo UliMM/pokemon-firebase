@@ -1,0 +1,27 @@
+.boton-ad {
+  padding: 12px 25px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 20px auto;
+  display: block;
+  font-weight: bold;
+}
+
+.contador-activo {
+  background: #39ff14;
+  color: #000;
+}
+
+.formulario-activo {
+  background: #2c3e50;
+  color: #39ff14;
+  border: 2px solid #39ff14;
+}
+
+.boton-ad:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px #39ff14;
+}

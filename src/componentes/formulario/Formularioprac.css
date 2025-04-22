@@ -1,0 +1,35 @@
+/* src/componentes/Formularioprac.css */
+.registros-container {
+  margin-bottom: 25px;
+}
+
+.lista-registros {
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.registro-item {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 195, 255, 0.2);
+  display: flex;
+  align-items: center;
+}
+
+.registro-numero {
+  color: #00c3ff;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.sin-registros {
+  color: rgba(0, 195, 255, 0.5);
+  text-align: center;
+}
+
+.neon-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #00f2ff;
+}

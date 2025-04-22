@@ -1,0 +1,169 @@
+.neon-pokemon-container {
+  background: rgba(5, 5, 30, 0.7);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 
+    0 0 25px rgba(0, 150, 255, 0.5),
+    inset 0 0 15px rgba(0, 200, 255, 0.2);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.neon-pokemon-title {
+  color: #00f2ff;
+  text-align: center;
+  text-shadow: 
+    0 0 10px #00c3ff,
+    0 0 20px rgba(0, 195, 255, 0.7);
+  margin-bottom: 30px;
+  letter-spacing: 3px;
+}
+
+.neon-pokemon-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 20px 0;
+  background: rgba(0, 150, 255, 0.2);
+  border: 1px solid rgba(0, 200, 255, 0.5);
+  color: #00f2ff;
+  font-size: 18px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+
+.neon-pokemon-button:hover {
+  background: rgba(0, 195, 255, 0.3);
+  box-shadow: 
+    0 0 20px rgba(0, 195, 255, 0.7),
+    inset 0 0 10px rgba(0, 195, 255, 0.4);
+}
+
+.neon-pokemon-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.neon-pokemon-card {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(10, 10, 40, 0.5);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 200, 255, 0.2);
+}
+
+.neon-pokemon-name {
+  color: #00ffaa;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow: 
+    0 0 10px #00ffaa,
+    0 0 20px rgba(0, 255, 170, 0.5);
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.neon-pokemon-image {
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 10px rgba(0, 200, 255, 0.7));
+  background: rgba(0, 200, 255, 0.1);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.neon-pokemon-details {
+  margin-top: 20px;
+  color: #00e1ff;
+}
+
+.neon-detail-label {
+  color: #00c3ff;
+  text-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+}
+
+.neon-favorite-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 30px 0 20px;
+  background: rgba(255, 45, 117, 0.1);
+  border: 1px solid rgba(255, 45, 117, 0.3);
+  color: #ff2d75;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 6px;
+}
+
+.neon-favorite-btn:hover {
+  background: rgba(255, 45, 117, 0.2);
+  box-shadow: 
+    0 0 15px rgba(255, 45, 117, 0.5),
+    inset 0 0 10px rgba(255, 45, 117, 0.3);
+}
+
+.neon-favorite-btn.liked {
+  background: rgba(255, 45, 117, 0.3);
+  color: #ff8fab;
+}
+
+.neon-favoritos-title {
+  color: #00f2ff;
+  text-align: center;
+  margin: 30px 0 20px;
+  text-shadow: 
+    0 0 10px #00c3ff,
+    0 0 20px rgba(0, 195, 255, 0.5);
+}
+
+.neon-favoritos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.neon-favorito-card {
+  background: rgba(5, 5, 30, 0.7);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.neon-favorito-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 195, 255, 0.3);
+}
+
+.neon-fav-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 5px rgba(0, 200, 255, 0.7));
+}
+
+.neon-fav-name {
+  color: #00ffaa;
+  font-size: 16px;
+  margin: 5px 0;
+  text-transform: capitalize;
+}
+
+.neon-fav-type {
+  color: #00c3ff;
+  font-size: 14px;
+}
+
+.neon-loading, .neon-no-favs {
+  text-align: center;
+  color: #00e1ff;
+  margin: 20px 0;
+}
