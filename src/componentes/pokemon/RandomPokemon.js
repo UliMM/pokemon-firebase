@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase-config';
-import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import './RandomPokemon1.css';
 
 const RandomPokemon = ({ usuarioAutenticado }) => {
@@ -10,61 +10,77 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
   const [favoritos, setFavoritos] = useState([]);
   const [loadingFavoritos, setLoadingFavoritos] = useState(false);
 
-  const fetchFavoritos = async () => {
+  // Escucha cambios en tiempo real de los favoritos
+  useEffect(() => {
     if (!usuarioAutenticado?.uid) {
       setFavoritos([]);
       return;
     }
 
     setLoadingFavoritos(true);
-    try {
-      const q = query(
-        collection(db, 'pokemon_favoritos'),
-        where('userId', '==', usuarioAutenticado.uid)
-      );
-      
-      const querySnapshot = await getDocs(q);
+    const q = query(
+      collection(db, 'pokemon_favoritos'),
+      where('userId', '==', usuarioAutenticado.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const favs = [];
       querySnapshot.forEach((doc) => {
         favs.push({ id: doc.id, ...doc.data() });
       });
-      
       setFavoritos(favs);
-    } catch (error) {
-      console.error('Error al obtener favoritos:', error);
-    } finally {
       setLoadingFavoritos(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchFavoritos();
-  }, [usuarioAutenticado?.uid]);
+      // Verifica si el pokémon actual está en favoritos
+      if (pokemon) {
+        const isFavorito = favs.some(fav => fav.pokemonName === pokemon.name);
+        setIsLiked(isFavorito);
+      }
+    }, (error) => {
+      console.error("Error en la suscripción:", error);
+      setLoadingFavoritos(false);
+    });
+
+    return () => unsubscribe();
+  }, [usuarioAutenticado?.uid, pokemon?.name]);
 
   const handleLikeClick = async () => {
     if (!usuarioAutenticado || !pokemon) return;
 
     try {
       if (!isLiked) {
-        await addDoc(collection(db, 'pokemon_favoritos'), {
-          pokemonName: pokemon.name,
-          pokemonImage: pokemon.image,
-          pokemonAbilities: pokemon.abilities,
-          pokemonType: pokemon.types,
-          pokemonHeight: pokemon.height,
-          pokemonWeight: pokemon.weight,
-          userId: usuarioAutenticado.uid,
-          createdAt: new Date()
-        });
-      } else {
-        const pokemonRef = favoritos.find(fav => fav.pokemonName === pokemon.name);
-        if (pokemonRef) {
-          await deleteDoc(doc(db, 'pokemon_favoritos', pokemonRef.id));
+        // Verificar si ya existe en favoritos
+        const existe = favoritos.some(fav => 
+          fav.pokemonName === pokemon.name && fav.userId === usuarioAutenticado.uid
+        );
+        
+        if (!existe) {
+          await addDoc(collection(db, 'pokemon_favoritos'), {
+            pokemonName: pokemon.name,
+            pokemonImage: pokemon.image,
+            pokemonAbilities: pokemon.abilities,
+            pokemonType: pokemon.types,
+            pokemonHeight: pokemon.height,
+            pokemonWeight: pokemon.weight,
+            userId: usuarioAutenticado.uid,
+            createdAt: new Date()
+          });
         }
+      } else {
+        // Buscar y eliminar el favorito específico
+        const q = query(
+          collection(db, 'pokemon_favoritos'),
+          where('pokemonName', '==', pokemon.name),
+          where('userId', '==', usuarioAutenticado.uid)
+        );
+        const snapshot = await getDocs(q);
+        
+        const deletePromises = snapshot.docs.map(async (document) => {
+          await deleteDoc(doc(db, 'pokemon_favoritos', document.id));
+        });
+        
+        await Promise.all(deletePromises);
       }
-
-      setIsLiked(!isLiked);
-      await fetchFavoritos();
     } catch (error) {
       console.error('Error al actualizar favoritos:', error);
     }
@@ -72,7 +88,6 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
 
   const fetchRandomPokemon = async () => {
     setLoading(true);
-    setIsLiked(false);
     const randomId = Math.floor(Math.random() * 898) + 1;
     try {
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
@@ -83,16 +98,13 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
         image: data.sprites.front_default,
         abilities: data.abilities.map((ability) => ability.ability.name).join(', '),
         types: data.types.map((type) => type.type.name).join(', '),
-        weight: data.weight / 10,
-        height: data.height / 10,
+        weight: (data.weight / 10).toFixed(1), // kg con 1 decimal
+        height: (data.height / 10).toFixed(1), // m con 1 decimal
       };
 
       setPokemon(pokemonData);
 
-      if (usuarioAutenticado) {
-        const isFavorito = favoritos.some(fav => fav.pokemonName === pokemonData.name);
-        setIsLiked(isFavorito);
-      }
+      // Verificar si está en favoritos (se maneja en onSnapshot)
     } catch (error) {
       console.error('Error fetching the Pokémon:', error);
     } finally {
@@ -100,9 +112,18 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
     }
   };
 
+  const handleRemoveFavorito = async (pokemonId) => {
+    try {
+      await deleteDoc(doc(db, 'pokemon_favoritos', pokemonId));
+    } catch (error) {
+      console.error('Error al eliminar favorito:', error);
+    }
+  };
+
+  // Cargar un pokémon al inicio y cuando cambie el usuario
   useEffect(() => {
     fetchRandomPokemon();
-  }, [usuarioAutenticado]);
+  }, [usuarioAutenticado?.uid]);
 
   return (
     <div className="neon-pokemon-container">
@@ -118,14 +139,21 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
       
       {pokemon && (
         <div className="neon-pokemon-card">
-          <h3 className="neon-pokemon-name">{pokemon.name}</h3>
-          <img src={pokemon.image} alt={pokemon.name} className="neon-pokemon-image" />
+          <h3 className="neon-pokemon-name">{pokemon.name.toUpperCase()}</h3>
+          <img 
+            src={pokemon.image} 
+            alt={pokemon.name} 
+            className="neon-pokemon-image"
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/150?text=Pokemon+no+disponible';
+            }}
+          />
           
           <div className="neon-pokemon-details">
             <p><span className="neon-detail-label">HABILIDADES:</span> {pokemon.abilities}</p>
             <p><span className="neon-detail-label">TIPOS:</span> {pokemon.types}</p>
-            <p><span className="neon-detail-label">ALTURA:</span> {pokemon.height} decímetros</p>
-            <p><span className="neon-detail-label">PESO:</span> {pokemon.weight} hectogramos</p>
+            <p><span className="neon-detail-label">ALTURA:</span> {pokemon.height} m</p>
+            <p><span className="neon-detail-label">PESO:</span> {pokemon.weight} kg</p>
           </div>
 
           {usuarioAutenticado && (
@@ -133,6 +161,7 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
               <button
                 className={`neon-favorite-btn ${isLiked ? 'liked' : ''}`}
                 onClick={handleLikeClick}
+                disabled={loadingFavoritos}
               >
                 {isLiked ? '❤️ QUITAR DE FAVORITOS' : '♡ AÑADIR A FAVORITOS'}
               </button>
@@ -147,9 +176,22 @@ const RandomPokemon = ({ usuarioAutenticado }) => {
                 <div className="neon-favoritos-grid">
                   {favoritos.map((fav) => (
                     <div key={fav.id} className="neon-favorito-card">
-                      <img src={fav.pokemonImage} alt={fav.pokemonName} className="neon-fav-image" />
-                      <h4 className="neon-fav-name">{fav.pokemonName}</h4>
+                      <img 
+                        src={fav.pokemonImage} 
+                        alt={fav.pokemonName} 
+                        className="neon-fav-image"
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/100?text=Pokemon';
+                        }}
+                      />
+                      <h4 className="neon-fav-name">{fav.pokemonName.toUpperCase()}</h4>
                       <p className="neon-fav-type">TIPO: {fav.pokemonType}</p>
+                      <button 
+                        className="neon-remove-fav"
+                        onClick={() => handleRemoveFavorito(fav.id)}
+                      >
+                        ELIMINAR
+                      </button>
                     </div>
                   ))}
                 </div>

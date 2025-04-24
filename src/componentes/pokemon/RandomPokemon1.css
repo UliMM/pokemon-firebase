@@ -167,3 +167,28 @@
   color: #00e1ff;
   margin: 20px 0;
 }
+
+.neon-favorite-btn {
+  transition: all 0.3s ease;
+  margin: 10px 0;
+}
+
+.neon-favorite-btn.liked {
+  background-color: #ff3366;
+  box-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366;
+}
+
+.neon-remove-fav {
+  background: transparent;
+  border: 1px solid #ff3366;
+  color: #ff3366;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.neon-remove-fav:hover {
+  background: #ff3366;
+  color: white;
+}

@@ -13,7 +13,6 @@ function App() {
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [personas, setPersonas] = useState([]);
-  const [contador, setContador] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -72,7 +71,7 @@ function App() {
           
           <div className="content-container">
             {seccionActual === 'contador' && (
-              <Contador contador={contador} setContador={setContador} />
+              <Contador usuarioAutenticado={usuarioAutenticado} />
             )}
             
             {seccionActual === 'formulario' && (
